@@ -42,13 +42,14 @@ cste = 0
 past_bodycomposition = []
 
 # Global values for food calculator
-filename_food = '../HealthApp/cste.p'
+filename_food = '/Users/philipczarnecki/PycharmProjects/Daily_Food_Intake/HealthApp/cste.p'
 breakfast = []
 breakfast_cal_per_g = []
 breakfast_percent = []
 grams_of_breakfast = []
 breakfast_more = ""
 Foodsave = []
+totalbreakfastpercent = 0
 
 breakfasts = ['Oatmeal', 'Cereal', 'Scrambled Eggs', 'Omelet', 'Cheese Bagel', 'Waffle']
 breakfasts_c = ['Calories per g', 'Fat per g', 'Sodium per g', 'Carbohydrates per g', 'Protein per g']
@@ -429,6 +430,26 @@ def bodycompositionfunc():
     def ListBodyComp():
         global BodyComposition_data
         global date
+        global age
+        global height_cm
+        global weight_kg
+        global lbm
+        global fbm
+        global bmi
+        global bfpercent
+        global bmr
+        global cbpd
+        global cte
+        age = round(age, 2)
+        height_cm = round(height_cm, 2)
+        weight_kg = round(weight_kg, 2)
+        lbm = round(lbm, 2)
+        fbm = round(fbm, 2)
+        bmi = round(bmi, 2)
+        bfpercent = round(bfpercent, 2)
+        bmr = round(bmr, 2)
+        cbpd = round(cbpd, 2)
+        cte = round(cte, 2)
         date = today.strftime("%d/%m/%Y")
         label_widget1 = Label(window, text='Age: {}'.format(age), bg=bg, fg=fg,font=fontb).pack()
         label_widget2 = Label(window, text='Gender: {}'.format(gender), bg=bg, fg=fg,font=fontb).pack()
@@ -477,6 +498,7 @@ def Before_dietfunc():
         global cte
         global cste
         global Foodsave
+        global totalbreakfastpercent
 
         with open(filename_body, 'rb') as filehandler:
             past_bodycomposition = pickle.load(filehandler)
@@ -486,13 +508,16 @@ def Before_dietfunc():
                 Foodsave = pickle.load(filehandler)
         except IOError:
             cste=cte
+            totalbreakfastpercent = 0
 
         try:
             cste = Foodsave[0]
             if today != Foodsave[1]:
                 cste = cte
+                totalbreakfastpercent = 0
         except IndexError:
             cste = cte
+            totalbreakfastpercent = 0
         dietfunc()
     ttk.Button(window, text='Use Past Values', command=submitg).pack()
 
@@ -650,10 +675,10 @@ def morebreakfast_cont():
 
 def breakfastplan():
     global Foodsave
+    global totalbreakfastpercent
     Foodsave = [cste, today]
     savefood(Foodsave)
     label_widget = Label(window, text='Breakfast', bg=bg, fg=fg,font=fonta).pack()
-    totalbreakfastpercent =100-(cste/cte*100)
     for i in range(len(breakfast)):
         label_widget1 = Label(window, text='{} - {}g'.format(breakfast[i], grams_of_breakfast[i]), bg=bg,fg=fg, font=fontb).pack()
     for z in range(len(breakfast_percent)):
