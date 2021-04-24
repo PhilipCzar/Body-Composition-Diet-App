@@ -86,7 +86,7 @@ def save(BodyComposition_data):
         pickle.dump(BodyComposition_data, filehandler)
 
 def savefood(Foodsave):
-    with open(file, 'wb') as filehandler:
+    with open(filename_food, 'wb') as filehandler:
         pickle.dump(Foodsave, filehandler)
 
 # Numeric Value Error Message
