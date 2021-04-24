@@ -6,13 +6,15 @@ from tkinter import ttk
 from tkinter import *
 import pickle
 from datetime import date
+import os
+from pathlib import Path
 
 
 window = Tk()
 today = date.today()
 
 # Global values for body composition
-filename_body = '/Users/philipczarnecki/PycharmProjects/Daily_Food_Intake/HealthApp/BodyComposition.p'
+filename_body = str(Path(os.path.dirname(__file__)) / 'BodyComposition.p')
 gender = ""
 age = 0
 weight_kg = 0
@@ -42,7 +44,7 @@ cste = 0
 past_bodycomposition = []
 
 # Global values for food calculator
-filename_food = '/Users/philipczarnecki/PycharmProjects/Daily_Food_Intake/HealthApp/cste.p'
+filename_food = str(Path(os.path.dirname(__file__)) / 'cste.p')
 breakfast = []
 breakfast_cal_per_g = []
 breakfast_percent = []
@@ -60,6 +62,16 @@ breakfasts_n = np.array([[3.58974359, 0.0641025641, 0, 0.7179487179, 0.128205128
                 [2.253521127, 0.05633802817, 2.957746479, 0.3943661972, 0.05633802817]])
 breakfasts_n_r = np.around(breakfasts_n, 2)
 df_breakfast = pd.DataFrame(breakfasts_n_r, index=breakfasts, columns=breakfasts_c)
+
+# Workout Exercises
+workout_exercises_targets = ['Core', 'Arms', 'Back', 'Chest', 'Legs', 'Shoulders']
+workout_exercises = np.array([['Chops', 'Russian Twist', 'Jackknife Sit Up', 'Russian Pumps', 'Bicycle Crunch', 'Oblique Crunch', 'Plank', 'Side Plank', 'Superman', 'Mountain Climbers'],
+                             ['Bicep Curl, Hammer Curl', 'Bench Press', 'Bench Dip', 'Dumbbell Flyes'],
+                             ['Romanian Deadlift', 'Bent Over Row', 'Chin Up', 'Pull Up', 'Lat Pulldowns', 'Seated Row', 'T Bar Row'],
+                             ['Chest Fly', 'Bench Press', 'Dumbbell Flyes', 'Pec Deck', 'Push Up'],
+                             ['Leg Extensions', 'Box Jump', 'Box Squat', 'Bulgarian Split Squat', 'Deadlift', 'Hip Thrust', 'Jump Squats', 'Leg Press', 'Lunge', 'Pistol Squat', 'Squat', 'Calf Raises'],
+                             ['Fornt Raises', 'Lateral Raises', 'Overhead Press', 'Landmine']],dtype=object)
+df_workout_exercises = pd.DataFrame(workout_exercises, index=workout_exercises_targets, columns=)
 
 # Basic Global Values
 fonta = ("Courier", 23)
@@ -352,7 +364,16 @@ def bodycompositionfunc():
                 lfm = .90
             elif bfpercent_r > 28:
                 lfm = .85
-        # ADD WOMEN LFM
+        if gender == "female":
+            bfpercent_r = round(bfpercent)
+            if bfpercent_r in range(14, 18, 1):
+                lfm = 1
+            elif bfpercent_r in range(19, 28, 1):
+                lfm = .95
+            elif bfpercent_r in range(29, 38, 1):
+                lfm = .90
+            elif bfpercent_r > 38:
+                lfm = .85
         bmr = weight_kg * 24 * lfm
         Almcalc()
 
@@ -518,6 +539,8 @@ def Before_dietfunc():
         except IndexError:
             cste = cte
             totalbreakfastpercent = 0
+        Foodsave = [cste, today]
+        savefood(Foodsave)
         dietfunc()
     ttk.Button(window, text='Use Past Values', command=submitg).pack()
 
@@ -680,11 +703,11 @@ def breakfastplan():
     savefood(Foodsave)
     label_widget = Label(window, text='Breakfast', bg=bg, fg=fg,font=fonta).pack()
     for i in range(len(breakfast)):
-        label_widget1 = Label(window, text='{} - {}g'.format(breakfast[i], grams_of_breakfast[i]), bg=bg,fg=fg, font=fontb).pack()
+        label_widget1 = Label(window, text='{} - {}g'.format(breakfast[i], round(grams_of_breakfast[i],2)), bg=bg,fg=fg, font=fontb).pack()
     for z in range(len(breakfast_percent)):
         totalbreakfastpercent = totalbreakfastpercent+int(breakfast_percent[z])
     label_widget3 = Label(window, text='Total Percent Of Daily Calories Used: {}%'.format(totalbreakfastpercent), bg=bg, fg=fg, font=fontb).pack()
-    label_widget4 = Label(window, text='Calories Still To Eat: {} calories'.format(cste),bg=bg, fg=fg, font=fontb).pack()
+    label_widget4 = Label(window, text='Calories Still To Eat: {} calories'.format(round(cste,2)),bg=bg, fg=fg, font=fontb).pack()
     ttk.Button(window, text='Back To Menu', command=StartMenu).pack()
 
 
@@ -713,7 +736,8 @@ def pastbodycompositionfunc():
     label_widget12 = Label(window, text='Calories To Eat Per Day: {} calories'.format(past_bodycomposition[11]), bg=bg, fg=fg,font=fontb).pack()
     ttk.Button(window, text='Back To Menu', command=StartMenu).pack()
 
-
+def workout_ex():
+    print("Done")
 
 # Starting Menu
 def StartMenu():
@@ -724,12 +748,14 @@ def StartMenu():
     bodycompositionfunc_B = Button(window, text="Body Composition", command=bodycompositionfunc, width=width_b, height=height_b, font=font_B, fg=fg_b, bg=bg_b, highlightcolor=highlight_c_b).pack(ipady=10)
     diet_B = Button(window, text="Food Calculator", command=Before_dietfunc, width=width_b, height=height_b, font=font_B, fg=fg_b, bg=bg_b, highlightcolor=highlight_c_b).pack(ipady=10)
     past_bodycompositionfunc_B = Button(window, text="Past Body Composition", command=pastbodycompositionfunc, width=width_b, height=height_b, font=font_B, fg=fg_b, bg=bg_b, highlightcolor=highlight_c_b).pack(ipady=10)
+    workout_ex_B = Button(window, text="Workout Exercises", command=workout_ex,width=width_b, height=height_b, font=font_B, fg=fg_b, bg=bg_b,highlightcolor=highlight_c_b).pack(ipady=10)
 
 window.title('Body Composition & Diet App')
 window.geometry("{}x{}".format(screen_width, screen_height))
 window.resizable(height = screen_height, width = screen_width)
 window.configure(bg=bg)
 StartMenu()
+
 def Main():
     window.mainloop()
 
