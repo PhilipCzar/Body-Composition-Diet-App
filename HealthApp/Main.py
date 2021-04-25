@@ -1,14 +1,12 @@
 import math
-
-import numpy as np
-import pandas as pd
-from tkinter import ttk
-from tkinter import *
+import os
 import pickle
 from datetime import date
-import os
 from pathlib import Path
-
+from tkinter import *
+from tkinter import ttk
+import numpy as np
+import pandas as pd
 
 window = Tk()
 today = date.today()
@@ -64,8 +62,8 @@ breakfasts_n_r = np.around(breakfasts_n, 2)
 df_breakfast = pd.DataFrame(breakfasts_n_r, index=breakfasts, columns=breakfasts_c)
 
 # Global values for Exercises
-# targetofexercise = "0"
-# equipmentforexercise = "0"
+targetofexercise = 0
+equipmentforexercise = 0
 my_equipment = ""
 my_target = ""
 class Exercise:
@@ -110,7 +108,7 @@ exercises = ExerciseContainer([
 
     Exercise('Bicep Curl', ['Dumbbells','Barbell',''],['Arms','']),
     Exercise('Hammer Curl', ['Dumbbells', ''], ["Arms", '']),
-    Exercise('Bench Press', ['Barbell', 'Dumbbells'], ['Arms', '']),
+    Exercise('Bench Press', ['Barbell', 'Dumbbells'], ['Arms', 'Chest']),
     Exercise('Dips', ['Nothing', ''], ['Arms', 'Chest', '']),
     Exercise('Dumbbell Flyes', ['Dumbbells',''], ['Arms', 'Chest', '']),
     Exercise('Push Ups',['Nothing',''],['Arms', 'Chest', '']),
@@ -805,32 +803,50 @@ def pastbodycompositionfunc():
     ttk.Button(window, text='Back To Menu', command=StartMenu).pack()
 
 def workout_ex():
-    global targetofexercise
-    global equipmentforexercise
     for child in window.winfo_children():
         child.destroy()
-    val = StringVar(window, "1")
-    options = {"Core": "1",
-               "Arms": "2",
-               "Back": "3",
-               "Chest": "4",
-               "Legs": "5",
-               "Shoulders": "6",
-               "Any": "7"}
-    Label(window, text='Targeted Body Part', bg=bg, fg=fg, font=fonta).pack()
-    for (txt, targetofexercise) in options.items():
-        Radiobutton(window, text=txt, variable=val, value=targetofexercise, command=checkforexercises_t).pack(side=TOP,ipady=4)
 
-    val = StringVar(window, "1")
-    equipmentforexercise_o = {"Barbell": "1",
-                "Dumbbells": "2",
-                "Machine": "3",
-                'Nothing': '4',
-                'Anything': '5'}
+    v = IntVar()
+    v.set(1)
+
+    options = [["Core", 1],
+               ["Arms", 2],
+               ["Back", 3],
+               ["Chest", 4],
+               ["Legs", 5],
+               ["Shoulders", 6],
+               ["Any", 7]]
+
+    def Choicea():
+        global targetofexercise
+        targetofexercise = v.get()
+        checkforexercises_t()
+
+    Label(window,text='Targeted Body Part', bg=bg, fg=fg, font=fonta).pack()
+    for txta, vala in options:
+        Radiobutton(window,text=txta,variable=v,command=Choicea,value=vala, bg=bg, fg=fg, font=fontb).pack(side=TOP,ipady=4)
+
+
+    b = IntVar()
+    b.set(1)
+
+    options = [["Barbell", 1],
+               ["Dumbbells", 2],
+               ["Machine", 3],
+               ["Nothing", 4],
+               ["Anything", 5]]
+
+    def Choiceb():
+        global equipmentforexercise
+        equipmentforexercise = b.get()
+        checkforexercises_e()
+
     Label(window, text='Equipment', bg=bg, fg=fg, font=fonta).pack()
-    for (txt, equipmentforexercise) in equipmentforexercise_o.items():
-        Radiobutton(window, text=txt, variable=val, value=equipmentforexercise, command=checkforexercises_e).pack(side=TOP,ipady=4)
-    workout_ex_B = Button(window, text="Search Exercises", command=checkforexercises, width=width_b, height=height_b,font=font_B, fg=fg_b, bg=bg_b, highlightcolor=highlight_c_b).pack(ipady=10)
+    for txtb, valb in options:
+        Radiobutton(window, text=txtb, variable=b, command=Choiceb, value=valb, bg=bg, fg=fg, font=fontb).pack(
+            side=TOP, ipady=4)
+    workout_ex_B = Button(window, text="Search Exercises", command=checkforexercises, width=width_b, height=height_b,
+                          font=font_B, fg=fg_b, bg=bg_b, highlightcolor=highlight_c_b).pack(ipady=10)
 
 def checkforexercises_t():
     global my_target
@@ -863,8 +879,6 @@ def checkforexercises_e():
         my_equipment = ""
 
 def checkforexercises():
-    print(my_target)
-    print(my_equipment)
     exercises_with_my_equipment = ExerciseContainer(exercises.get_exercises(my_equipment, "equipment"))
     my_exercises = list(exercises_with_my_equipment.get_exercise_names(my_target, "targets"))
 
