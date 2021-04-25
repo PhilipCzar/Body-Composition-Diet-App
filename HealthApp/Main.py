@@ -97,9 +97,9 @@ class ExerciseContainer:
 exercises = ExerciseContainer([
     Exercise("Chops", ["Machine", ''], ["Core", '']),
     Exercise("Russian Twist", ['Nothing', ''], ['Core','']),
-    Exercise("Jackknife Sit Ups", ['Nothing'],['Core', '']),
+    Exercise("Jackknife Sit Ups", ['Nothing',''],['Core', '']),
     Exercise("Russian Pumps", ['Nothing',''], ['Core','']),
-    Exercise('Bicycle Crunch', ['Nothing',''], ['Core',""]),
+    Exercise('Bicycle Crunch', ['Nothing',''], ['Core','']),
     Exercise("Oblique Crunch", ['Nothing', ''], ["Core", '']),
     Exercise('Plank', ['Nothing', ''], ["Core", '']),
     Exercise('Side Plank', ['Nothing', ''],['Core', '']),
@@ -108,7 +108,7 @@ exercises = ExerciseContainer([
 
     Exercise('Bicep Curl', ['Dumbbells','Barbell',''],['Arms','']),
     Exercise('Hammer Curl', ['Dumbbells', ''], ["Arms", '']),
-    Exercise('Bench Press', ['Barbell', 'Dumbbells'], ['Arms', 'Chest']),
+    Exercise('Bench Press', ['Barbell', 'Dumbbells', ''], ['Arms', 'Chest', '']),
     Exercise('Dips', ['Nothing', ''], ['Arms', 'Chest', '']),
     Exercise('Dumbbell Flyes', ['Dumbbells',''], ['Arms', 'Chest', '']),
     Exercise('Push Ups',['Nothing',''],['Arms', 'Chest', '']),
@@ -135,7 +135,7 @@ exercises = ExerciseContainer([
 
     Exercise('Front Raises', ['Dumbbells', ''], ['Shoulders','']),
     Exercise('Lateral Raises', ['Dumbbells', ''], ['Shoulders','']),
-    Exercise('Overhead Press', ['Dumbbells', 'Barbell'], ['Shoulders','']),
+    Exercise('Overhead Press', ['Dumbbells', 'Barbell',''], ['Shoulders','']),
     Exercise('Landmine', ['Barbell', ''], ['Shoulders',''])
 ])
 
