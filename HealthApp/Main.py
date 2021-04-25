@@ -64,7 +64,10 @@ breakfasts_n_r = np.around(breakfasts_n, 2)
 df_breakfast = pd.DataFrame(breakfasts_n_r, index=breakfasts, columns=breakfasts_c)
 
 # Global values for Exercises
-targetofexercise = "1"
+# targetofexercise = "0"
+# equipmentforexercise = "0"
+my_equipment = ""
+my_target = ""
 class Exercise:
 
     def __init__(self, name, equipment, targets):
@@ -94,10 +97,48 @@ class ExerciseContainer:
 
 
 exercises = ExerciseContainer([
-    Exercise("burpees", [], ["upper", "core", "legs"]),
-    Exercise("deadlift", ["barbell", "plates"], ["upper", "legs"]),
-    Exercise("squats", [], ["legs"]),
-    Exercise("sit-up", [], ["core"])
+    Exercise("Chops", ["Machine", ''], ["Core", '']),
+    Exercise("Russian Twist", ['Nothing', ''], ['Core','']),
+    Exercise("Jackknife Sit Ups", ['Nothing'],['Core', '']),
+    Exercise("Russian Pumps", ['Nothing',''], ['Core','']),
+    Exercise('Bicycle Crunch', ['Nothing',''], ['Core',""]),
+    Exercise("Oblique Crunch", ['Nothing', ''], ["Core", '']),
+    Exercise('Plank', ['Nothing', ''], ["Core", '']),
+    Exercise('Side Plank', ['Nothing', ''],['Core', '']),
+    Exercise('Superman', ['Nothing', ''], ['Core','']),
+    Exercise('Mountain Climbers', ['Nothing', ''], ['Core', '']),
+
+    Exercise('Bicep Curl', ['Dumbbells','Barbell',''],['Arms','']),
+    Exercise('Hammer Curl', ['Dumbbells', ''], ["Arms", '']),
+    Exercise('Bench Press', ['Barbell', 'Dumbbells'], ['Arms', '']),
+    Exercise('Dips', ['Nothing', ''], ['Arms', 'Chest', '']),
+    Exercise('Dumbbell Flyes', ['Dumbbells',''], ['Arms', 'Chest', '']),
+    Exercise('Push Ups',['Nothing',''],['Arms', 'Chest', '']),
+
+    Exercise('Romanian Deadlift',['Barbell', 'Dumbbells',''],['Back', 'Legs','']),
+    Exercise('Bent Over Row', ['Barbell', 'Dumbbells',''], ['Back', '']),
+    Exercise('Chin ups', ['Hanging Bar', ''], ['Back', 'Arms', '']),
+    Exercise('Pull ups', ['Hanging Bar', ''], ['Back', 'Arms', '']),
+    Exercise('Lat Pulldowns',['Machine', ''], ['Back','']),
+    Exercise('Seated Row', ['Machine',''], ['Back','']),
+    Exercise('T Bar Row', ['Barbell', ''], ['Back','']),
+
+    Exercise('Pec Deck', ['Machine',''],['Chest','']),
+
+    Exercise('Leg Extensions', ['Machine',''], ['Legs', '']),
+    Exercise('Bulgarian Split Squat', ['Dumbbells', 'Barbell','Nothing',''], ['Legs','']),
+    Exercise('Hip Thrust',['Barbell',''],['Legs','']),
+    Exercise('Jump Squats', ['Nothing', ''], ['Legs', '']),
+    Exercise('Leg Press', ['Machine',''],['Legs','']),
+    Exercise('Lunge',['Nothing','Barbell','Dumbbells', ''], ['Legs','']),
+    Exercise('Pistol Squat', ['Nothing',''],['Legs','']),
+    Exercise('Squat', ['Nothing','Barbell','Dumbbells',''],['Legs','']),
+    Exercise('Calf Raises',['Machine',''],['Legs','']),
+
+    Exercise('Front Raises', ['Dumbbells', ''], ['Shoulders','']),
+    Exercise('Lateral Raises', ['Dumbbells', ''], ['Shoulders','']),
+    Exercise('Overhead Press', ['Dumbbells', 'Barbell'], ['Shoulders','']),
+    Exercise('Landmine', ['Barbell', ''], ['Shoulders',''])
 ])
 
 # Basic Global Values
@@ -776,22 +817,23 @@ def workout_ex():
                "Legs": "5",
                "Shoulders": "6",
                "Any": "7"}
+    Label(window, text='Targeted Body Part', bg=bg, fg=fg, font=fonta).pack()
     for (txt, targetofexercise) in options.items():
-        Radiobutton(window, text=txt, variable=val, value=targetofexercise, command=checkforexercises).pack(side=TOP,ipady=4)
+        Radiobutton(window, text=txt, variable=val, value=targetofexercise, command=checkforexercises_t).pack(side=TOP,ipady=4)
 
     val = StringVar(window, "1")
-    options = {"Barbell": "1",
-               "Medicine Ball": "2",
-               "Dumbbell": "3",
-               "Chest": "4",
-               "Legs": "5",
-               "Shoulders": "6",
-               "Any": "7"}
-    for (txt, targetofexercise) in options.items():
-        Radiobutton(window, text=txt, variable=val, value=targetofexercise, command=checkforexercises).pack(side=TOP,
-                                                                                                            ipady=4)
+    equipmentforexercise_o = {"Barbell": "1",
+                "Dumbbells": "2",
+                "Machine": "3",
+                'Nothing': '4',
+                'Anything': '5'}
+    Label(window, text='Equipment', bg=bg, fg=fg, font=fonta).pack()
+    for (txt, equipmentforexercise) in equipmentforexercise_o.items():
+        Radiobutton(window, text=txt, variable=val, value=equipmentforexercise, command=checkforexercises_e).pack(side=TOP,ipady=4)
+    workout_ex_B = Button(window, text="Search Exercises", command=checkforexercises, width=width_b, height=height_b,font=font_B, fg=fg_b, bg=bg_b, highlightcolor=highlight_c_b).pack(ipady=10)
 
-def checkforexercises():
+def checkforexercises_t():
+    global my_target
     if targetofexercise == 1:
         my_target = "Core"
     elif targetofexercise == 2:
@@ -807,9 +849,22 @@ def checkforexercises():
     elif targetofexercise == 7:
         my_target = ""
 
-    my_equipment = "barbell"
-    my_target = "legs"
+def checkforexercises_e():
+    global my_equipment
+    if equipmentforexercise == 1:
+        my_equipment = "Barbell"
+    elif equipmentforexercise == 2:
+        my_equipment = "Dumbbells"
+    elif equipmentforexercise == 3:
+        my_equipment = "Machine"
+    elif equipmentforexercise == 4:
+        my_equipment = "Nothing"
+    elif equipmentforexercise == 5:
+        my_equipment = ""
 
+def checkforexercises():
+    print(my_target)
+    print(my_equipment)
     exercises_with_my_equipment = ExerciseContainer(exercises.get_exercises(my_equipment, "equipment"))
     my_exercises = list(exercises_with_my_equipment.get_exercise_names(my_target, "targets"))
 
