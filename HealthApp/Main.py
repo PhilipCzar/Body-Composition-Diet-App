@@ -38,7 +38,7 @@ BodyComp_Warning = False
 bfpercent_b_press = False
 firstfourinputs = [False, False, False, False]
 
-#Global values for both
+# Global values for both
 date = ""
 cste = 0
 past_bodycomposition = []
@@ -63,15 +63,42 @@ breakfasts_n = np.array([[3.58974359, 0.0641025641, 0, 0.7179487179, 0.128205128
 breakfasts_n_r = np.around(breakfasts_n, 2)
 df_breakfast = pd.DataFrame(breakfasts_n_r, index=breakfasts, columns=breakfasts_c)
 
-# Workout Exercises
-workout_exercises_targets = ['Core', 'Arms', 'Back', 'Chest', 'Legs', 'Shoulders']
-workout_exercises = np.array([['Chops', 'Russian Twist', 'Jackknife Sit Up', 'Russian Pumps', 'Bicycle Crunch', 'Oblique Crunch', 'Plank', 'Side Plank', 'Superman', 'Mountain Climbers'],
-                             ['Bicep Curl, Hammer Curl', 'Bench Press', 'Bench Dip', 'Dumbbell Flyes'],
-                             ['Romanian Deadlift', 'Bent Over Row', 'Chin Up', 'Pull Up', 'Lat Pulldowns', 'Seated Row', 'T Bar Row'],
-                             ['Chest Fly', 'Bench Press', 'Dumbbell Flyes', 'Pec Deck', 'Push Up'],
-                             ['Leg Extensions', 'Box Jump', 'Box Squat', 'Bulgarian Split Squat', 'Deadlift', 'Hip Thrust', 'Jump Squats', 'Leg Press', 'Lunge', 'Pistol Squat', 'Squat', 'Calf Raises'],
-                             ['Fornt Raises', 'Lateral Raises', 'Overhead Press', 'Landmine']],dtype=object)
-df_workout_exercises = pd.DataFrame(workout_exercises, index=workout_exercises_targets, columns=)
+# Global values for Exercises
+targetofexercise = "1"
+class Exercise:
+
+    def __init__(self, name, equipment, targets):
+        self.name = name
+        self.equipment = list(set(equipment))
+        self.targets = list(set(targets))
+
+class ExerciseContainer:
+
+    def __init__(self, exercises):
+        self.exercises = exercises
+
+    def filter(self, item, property):
+        if item in property:
+            return True
+        else:
+            return False
+
+    def get_exercises(self, target, what):
+        for exercise in self.exercises:
+            if self.filter(target, getattr(exercise, what)):
+                yield exercise
+
+    def get_exercise_names(self, target, what):
+        for exercise in list(self.get_exercises(target, what)):
+            yield exercise.name
+
+
+exercises = ExerciseContainer([
+    Exercise("burpees", [], ["upper", "core", "legs"]),
+    Exercise("deadlift", ["barbell", "plates"], ["upper", "legs"]),
+    Exercise("squats", [], ["legs"]),
+    Exercise("sit-up", [], ["core"])
+])
 
 # Basic Global Values
 fonta = ("Courier", 23)
@@ -737,7 +764,62 @@ def pastbodycompositionfunc():
     ttk.Button(window, text='Back To Menu', command=StartMenu).pack()
 
 def workout_ex():
-    print("Done")
+    global targetofexercise
+    global equipmentforexercise
+    for child in window.winfo_children():
+        child.destroy()
+    val = StringVar(window, "1")
+    options = {"Core": "1",
+               "Arms": "2",
+               "Back": "3",
+               "Chest": "4",
+               "Legs": "5",
+               "Shoulders": "6",
+               "Any": "7"}
+    for (txt, targetofexercise) in options.items():
+        Radiobutton(window, text=txt, variable=val, value=targetofexercise, command=checkforexercises).pack(side=TOP,ipady=4)
+
+    val = StringVar(window, "1")
+    options = {"Barbell": "1",
+               "Medicine Ball": "2",
+               "Dumbbell": "3",
+               "Chest": "4",
+               "Legs": "5",
+               "Shoulders": "6",
+               "Any": "7"}
+    for (txt, targetofexercise) in options.items():
+        Radiobutton(window, text=txt, variable=val, value=targetofexercise, command=checkforexercises).pack(side=TOP,
+                                                                                                            ipady=4)
+
+def checkforexercises():
+    if targetofexercise == 1:
+        my_target = "Core"
+    elif targetofexercise == 2:
+        my_target = "Arms"
+    elif targetofexercise == 3:
+        my_target = "Back"
+    elif targetofexercise == 4:
+        my_target = "Chest"
+    elif targetofexercise == 5:
+        my_target = "Legs"
+    elif targetofexercise == 6:
+        my_target = "Shoulders"
+    elif targetofexercise == 7:
+        my_target = ""
+
+    my_equipment = "barbell"
+    my_target = "legs"
+
+    exercises_with_my_equipment = ExerciseContainer(exercises.get_exercises(my_equipment, "equipment"))
+    my_exercises = list(exercises_with_my_equipment.get_exercise_names(my_target, "targets"))
+
+    for child in window.winfo_children():
+        child.destroy()
+
+    for i in range(len(my_exercises)):
+        label_widget1 = Label(window, text='{}'.format(my_exercises[i]), bg=bg,fg=fg, font=fontb).pack()
+    Button(window, text='Back To Menu', command=StartMenu, width=width_b, height=height_b, font=font_B, fg=fg_b,bg=bg_b, highlightcolor=highlight_c_b).pack()
+
 
 # Starting Menu
 def StartMenu():
